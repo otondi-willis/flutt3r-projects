@@ -8,6 +8,83 @@ const backgroundColor = Color(0xFFFCF4F4);
 const maroon = Color(0xFFc00100);
 
 class MyApp extends StatelessWidget {
+  Widget healthClientServices(String title, String imagePath) {
+    return Column(
+      children: [
+        Padding(
+          //padding: const EdgeInsets.symmetric(horizontal: 5),
+          padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+          child: Container(
+            //padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+            //margin: const EdgeInsets.fromLTRB(2, 0, 2, 0),
+            width: 80, // Adjusted width to fit 3 rectangles in a row
+            height: 60,
+            decoration: BoxDecoration(
+              color: maroon,
+              borderRadius:
+                  BorderRadius.circular(10.0), // Border radius applied here
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  imagePath,
+                  height: 25,
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.normal,
+                    fontSize: 7,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget bottomNavigatorButtons(double width, String title, String imagePath) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          child: Container(
+            width: width, // Adjusted width to fit 3 rectangles in a row
+            height: 40,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius:
+                  BorderRadius.circular(10.0), // Border radius applied here
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  imagePath,
+                  height: 25,
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 6.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -35,6 +112,7 @@ class MyApp extends StatelessWidget {
                         padding: const EdgeInsets.all(4.0),
                         child: Container(
                           width: 200,
+                          
                           margin: EdgeInsets.zero,
                           child: TextField(
                             decoration: InputDecoration(
@@ -72,224 +150,61 @@ class MyApp extends StatelessWidget {
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 5.0),
               width: 250, // Adjusted width to screenWidth
-              height: 180,
+              height: 230,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.0), // Border radius applied here
+                borderRadius:
+                    BorderRadius.circular(10.0), // Border radius applied here
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(10.0), // ClipRRect for applying border radius
+                borderRadius: BorderRadius.circular(
+                    10.0), // ClipRRect for applying border radius
                 child: Image.asset(
                   'assets/equiAfia.jpg',
-                  fit: BoxFit.cover,
+                  fit: BoxFit.fitWidth,
                 ),
               ),
             ),
+            SizedBox(height: 20),
             Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              child:const Text(
-              'Our Services',
-              style: TextStyle(
-                fontWeight: FontWeight.normal,
-                fontSize: 20,
+              margin: const EdgeInsets.symmetric(horizontal: 5),
+              child: const Text(
+                'Our Services',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
               ),
             ),
-            ),
-            
-             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal:5),
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    width: 80, // Adjusted width to fit 3 rectangles in a row
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: maroon,
-                      borderRadius: BorderRadius.circular(10.0), // Border radius applied here
-                    ),
-                    child: Column(
-                      mainAxisAlignment:MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/medical_services.PNG',
-                          height: 25,
-                        ),
-                        const SizedBox(height: 2),
-                        const Text(
-                          'Medical Services',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 7,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+            Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    healthClientServices(
+                        'Medical Services', 'assets/medical_services.PNG'),
+                    healthClientServices('Specialists', 'assets/specialists.PNG'),
+                    healthClientServices(
+                        'Health Records', 'assets/my_health_records.PNG'),
+                  ],
                 ),
-                
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal:5),
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    width: 80, // Adjusted width to fit 3 rectangles in a row
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: maroon,
-                      borderRadius: BorderRadius.circular(10.0), // Border radius applied here
-                    ),
-                    child: Column(
-                      mainAxisAlignment:MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/specialists.PNG',
-                          height: 25,
-                        ),
-                        const SizedBox(height: 2),
-                        const Text(
-                          'Specialists',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 7,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal:5),
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    width: 80, // Adjusted width to fit 3 rectangles in a row
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: maroon,
-                      borderRadius: BorderRadius.circular(10.0), // Border radius applied here
-                    ),
-                    child: Column(
-                      mainAxisAlignment:MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/my_health_records.PNG',
-                          height: 25,
-                        ),
-                        const SizedBox(height: 2),
-                        const Text(
-                          'Health Records',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 7,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
               ],
             ),
             const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal:5),
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    width: 80, // Adjusted width to fit 3 rectangles in a row
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: maroon,
-                      borderRadius: BorderRadius.circular(10.0), // Border radius applied here
-                    ),
-                    child: Column(
-                      mainAxisAlignment:MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/my_appointments.PNG',
-                          height: 25,
-                        ),
-                        const SizedBox(height: 2),
-                        const Text(
-                          'My Appointments',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 7,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+            Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    healthClientServices(
+                        'My Appointments', 'assets/my_appointments.PNG'),
+                    healthClientServices(
+                        'Medical Centers', 'assets/medical_centers.PNG'),
+                    healthClientServices('About Us', 'assets/about_us.PNG'),
+                  ],
                 ),
-                
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal:5),
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    width: 80, // Adjusted width to fit 3 rectangles in a row
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: maroon,
-                      borderRadius: BorderRadius.circular(10.0), // Border radius applied here
-                    ),
-                    child: Column(
-                      mainAxisAlignment:MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/medical_centers.PNG',
-                          height: 25,
-                        ),
-                        const SizedBox(height: 2),
-                        const Text(
-                          'Medical Centers',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 7,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal:5),
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    width: 80, // Adjusted width to fit 3 rectangles in a row
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: maroon,
-                      borderRadius: BorderRadius.circular(10.0), // Border radius applied here
-                    ),
-                    child: Column(
-                      mainAxisAlignment:MainAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/about_us.PNG',
-                          height: 25,
-                        ),
-                        const SizedBox(height: 2),
-                        const Text(
-                          'About Us',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 7,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
               ],
             ),
+            SizedBox(height: 40),
             Container(
               margin: const EdgeInsets.symmetric(vertical: 10),
               child: const Center(
@@ -300,175 +215,40 @@ class MyApp extends StatelessWidget {
                     fontSize: 15,
                     color: maroon,
                   ),
-            ),
+                ),
               ),
             ),
           ],
-          ),
-          bottomNavigationBar: Container(
+        ),
+        bottomNavigationBar: Container(
           color: Colors.transparent,
           child: Container(
-                width: 280, // Adjusted width to fit 3 rectangles in a row
-                height: 50,
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
-                  ), // Border radius applied here
-                color: Colors.white,
-                ),
-                child: Row(
+            width: 280, // Adjusted width to fit 3 rectangles in a row
+            height: 50,
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ), // Border radius applied here
+              color: Colors.white,
+            ),
+            child: Column(
+              children: [
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal:5),
-                      child: Container(
-                        width: 45, // Adjusted width to fit 3 rectangles in a row
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10.0), // Border radius applied here
-                        ),
-                        child: Column(
-                          mainAxisAlignment:MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/explore.PNG',
-                              height: 25,
-                            ),
-                            const SizedBox(height: 2),
-                            const Text(
-                              'Explore',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 6.5,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal:5),
-                      child: Container(
-                        width: 48, // Adjusted width to fit 3 rectangles in a row
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10.0), // Border radius applied here
-                        ),
-                        child: Column(
-                          mainAxisAlignment:MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/payments.PNG',
-                              height: 25,
-                            ),
-                            const SizedBox(height: 2),
-                            const Text(
-                              'Payments',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 6.5,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal:5),
-                      child: Container(
-                        width: 55, // Adjusted width to fit 3 rectangles in a row
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10.0), // Border radius applied here
-                        ),
-                        child: Column(
-                          mainAxisAlignment:MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/home.PNG',
-                              height: 25,
-                            ),
-                            const SizedBox(height: 2),
-                            const Text(
-                              'Home',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 6.5,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal:5),
-                      child: Container(
-                        width: 49, // Adjusted width to fit 3 rectangles in a row
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10.0), // Border radius applied here
-                        ),
-                        child: Column(
-                          mainAxisAlignment:MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/customer_care.PNG',
-                              height: 25,
-                            ),
-                            const SizedBox(height: 2),
-                            const Text(
-                              'Customer Care',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 6.5,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal:5),
-                      child: Container(
-                        width: 45, // Adjusted width to fit 3 rectangles in a row
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10.0), // Border radius applied here
-                        ),
-                        child: Column(
-                          mainAxisAlignment:MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              'assets/profile.PNG',
-                              height: 25,
-                            ),
-                            const SizedBox(height: 2),
-                            const Text(
-                              'Profile',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 6.5,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                    bottomNavigatorButtons(45, 'Explore', 'assets/explore.PNG'),
+                    bottomNavigatorButtons(49, 'Payments', 'assets/payments.PNG'),
+                    bottomNavigatorButtons(55, 'Home', 'assets/home.PNG'),
+                    bottomNavigatorButtons(
+                        49, 'Customer Care', 'assets/customer_care.PNG'),
+                    bottomNavigatorButtons(45, 'Profile', 'assets/profile.PNG'),
                   ],
                 ),
-              ),
+              ],
+            ),
           ),
+        ),
       ),
     );
   }
