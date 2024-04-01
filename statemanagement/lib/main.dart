@@ -5,7 +5,7 @@ void main() {
 }
 
 const List<String> urls = [
-  "https://live.staticflickr.com/7372/12502775644_acfd415fa7_w.jpg",
+  'https://live.staticflickr.com/65535/50489498856_67fbe52703_b.jpg',
   "https://live.staticflickr.com/7372/12502775644_acfd415fa7_w.jpg",
   "https://live.staticflickr.com/7372/12502775644_acfd415fa7_w.jpg",
   "https://live.staticflickr.com/7372/12502775644_acfd415fa7_w.jpg"
@@ -41,16 +41,35 @@ class GaleryPage extends StatelessWidget {
   }
 }
 
-class Photo extends StatelessWidget {
+class Photo extends StatefulWidget {
+  final String url;
   const Photo({super.key, required this.url});
 
-  final url;
+  @override
+  State<Photo> createState() => _PhotoState(url: url);
+}
+
+class _PhotoState extends State<Photo> {
+  String url;
+  int index = 0;
+
+  _PhotoState({required this.url});
+
+  onTao() {
+    setState(() {
+      index >= urls.length - 1 ? index = 0 : index++;
+    });
+    url = urls[index];
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(top: 10),
-      child: Image.network(url),
+      child: GestureDetector(
+        onTap: onTao,
+        child: Image.network(url),
+      ),
     );
   }
 }
