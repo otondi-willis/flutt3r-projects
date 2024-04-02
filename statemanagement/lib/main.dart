@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const App());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => GalleryModel(),
+      child: const App(),
+    ),
+  );
 }
 
 const List<String> urls = [
@@ -24,123 +30,97 @@ class PhotoState {
       required this.tags});
 }
 
-class App extends StatefulWidget {
+class App extends StatelessWidget {
   const App({super.key});
 
   @override
-  AppState createState() => AppState();
+  Widget build(BuildContext context) {
+    return const MaterialApp(title: 'PhotoViewer', home: GalleryPage());
+  }
 }
 
-class AppState extends State<App> {
+class GalleryModel extends ChangeNotifier {
   bool isTagging = false;
   List<PhotoState> photoStates =
       List.of(urls.map((url) => PhotoState(url: url, tags: {})));
   Set<String> tags = {"all", "nature", "cat"};
 
   void toggleTagging(String? url) {
-    setState(() {
-      isTagging = !isTagging;
-      for (var ps in photoStates) {
-        if (isTagging && ps.url == url) {
-          ps.selected = true;
-        } else {
-          ps.selected = false;
-        }
+    isTagging = !isTagging;
+    for (var ps in photoStates) {
+      if (isTagging && ps.url == url) {
+        ps.selected = true;
+      } else {
+        ps.selected = false;
       }
-    });
+    }
+    notifyListeners();
   }
 
   void onPhotoSelect(String url, bool selected) {
-    setState(() {
-      for (var ps in photoStates) {
-        if (ps.url == url) {
-          ps.selected = selected;
-        }
+    for (var ps in photoStates) {
+      if (ps.url == url) {
+        ps.selected = selected;
       }
-    });
+    }
+    notifyListeners();
   }
 
   void selectTag(String tag) {
-    setState(() {
-      if (isTagging) {
-        if (tag != "all") {
-          for (var ps in photoStates) {
-            if (ps.selected == true) {
-              ps.tags.add(tag);
-            }
+    if (isTagging) {
+      if (tag != "all") {
+        for (var ps in photoStates) {
+          if (ps.selected == true) {
+            ps.tags.add(tag);
           }
         }
-        toggleTagging(null);
-      } else {
-        for (var ps in photoStates) {
-          ps.display = tag == "all" ? true : ps.tags.contains(tag);
-        }
       }
-    });
-  }
+      toggleTagging(null);
+    } else {
+      for (var ps in photoStates) {
+        ps.display = tag == "all" ? true : ps.tags.contains(tag);
+      }
+    }
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Photo Viewer',
-        home: GaleryPage(
-          title: "Image Gallery",
-          photoStates: photoStates,
-          tags: tags,
-          tagging: isTagging,
-          toggleTagging: toggleTagging,
-          selectTag: selectTag,
-          onPhotoSelect: onPhotoSelect,
-        ));
+    notifyListeners();
   }
 }
 
-class GaleryPage extends StatelessWidget {
-  final String title;
-  final List<PhotoState> photoStates;
-  final Set<String> tags;
-  final bool tagging;
+class GalleryPage extends StatelessWidget {
+  final String title = 'Image Gallery';
 
-  final Function toggleTagging;
-  final Function selectTag;
-  final Function onPhotoSelect;
-
-  const GaleryPage(
-      {super.key,
-      required this.title,
-      required this.photoStates,
-      required this.tags,
-      required this.tagging,
-      required this.toggleTagging,
-      required this.selectTag,
-      required this.onPhotoSelect});
+  const GalleryPage({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(title)),
-      body: GridView.count(
-        primary: false,
-        crossAxisCount: 2,
-        children: List.of(photoStates.where((ps) => ps.display).map((ps) =>
-            Photo(
-                state: ps,
-                selectable: tagging,
-                onLongPress: toggleTagging,
-                onSelect: onPhotoSelect))),
-      ),
-      drawer: Drawer(
-        child: ListView(
-          children: List.of(tags.map((t) => ListTile(
-                title: Text(t),
-                onTap: () {
-                  selectTag(t);
-                  Navigator.of(context).pop();
-                },
-              ))),
+    return Consumer<GalleryModel>(builder: (context, gallery, child) {
+      return Scaffold(
+        appBar: AppBar(title: Text(title)),
+        body: GridView.count(
+          primary: false,
+          crossAxisCount: 2,
+          children: List.of(gallery.photoStates.where((ps) => ps.display).map(
+              (ps) => Photo(
+                  state: ps,
+                  selectable: gallery.isTagging,
+                  onLongPress: gallery.toggleTagging,
+                  onSelect: gallery.onPhotoSelect))),
         ),
-      ),
-    );
+        drawer: Drawer(
+          child: ListView(
+            children: List.of(gallery.tags.map((t) => ListTile(
+                  title: Text(t),
+                  onTap: () {
+                    gallery.selectTag(t);
+                    Navigator.of(context).pop();
+                  },
+                ))),
+          ),
+        ),
+      );
+    });
   }
 }
 
