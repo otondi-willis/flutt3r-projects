@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-//import 'package:provider/provider.dart';
-import 'package:get/get.dart';
+//import 'package:get/get.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
+
+part 'main.g.dart';
 
 void main() {
   runApp(const App());
@@ -35,52 +38,58 @@ class App extends StatelessWidget {
   }
 }
 
-class GalleryController extends GetxController {
-  var isTagging = false.obs;
-  var photoStates =
-      List.of(urls.map((url) => PhotoState(url: url, tags: {}).obs)).obs;
-  Set<String> tags = {"all", "nature", "cat"};
+final Set<String> tags = {"all", "nature", "cat"};
 
+class GalleryStore = GalleryStoreBase with _$GalleryStore;
+var galleryStore = GalleryStore();
+
+abstract class GalleryStoreBase with Store {
+  @observable
+  var isTagging = false;
+
+  @observable
+  var photoStates =
+      List.of(urls.map((url) => Observable(PhotoState(url: url, tags: {}))));
+
+  @action
   void toggleTagging(String? url) {
-    isTagging.value = !isTagging.value;
+    isTagging = !isTagging;
     for (var ps in photoStates) {
-      ps.update((ps) {
-        if (isTagging.value && ps?.url == url) {
-          ps?.selected = true;
-        } else {
-          ps?.selected = false;
-        }
-      });
+      if (isTagging && ps.value.url == url) {
+        ps.value.selected = true;
+      } else {
+        ps.value.selected = false;
+      }
+      ps.reportChanged();
     }
   }
 
+  @action
   void onPhotoSelect(String url, bool selected) {
     for (var ps in photoStates) {
-      ps.update((ps) {
-        if (ps?.url == url) {
-          ps?.selected = selected;
-        }
-      });
+      if (ps.value.url == url) {
+        ps.value.selected = selected;
+        ps.reportChanged();
+      }
     }
   }
 
+  @action
   void selectTag(String tag) {
-    if (isTagging.value) {
+    if (isTagging) {
       if (tag != "all") {
         for (var ps in photoStates) {
           if (ps.value.selected == true) {
-            ps.update((ps) {
-              ps?.tags.add(tag);
-            });
+            ps.value.tags.add(tag);
+            ps.reportChanged();
           }
         }
       }
       toggleTagging(null);
     } else {
       for (var ps in photoStates) {
-        ps.update((ps) {
-          ps?.display = tag == "all" ? true : ps.tags.contains(tag);
-        });
+        ps.value.display = tag == "all" ? true : ps.value.tags.contains(tag);
+        ps.reportChanged();
       }
     }
   }
@@ -95,27 +104,26 @@ class GalleryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final GalleryController c = Get.put(GalleryController());
-
     return Scaffold(
       appBar: AppBar(title: Text(title)),
-      body: Obx(
-        () => GridView.count(
+      body: Observer(
+        builder: (_) => GridView.count(
             primary: false,
             crossAxisCount: 2,
-            children: List.of(c.photoStates.where((ps) => ps.value.display).map(
-                (ps) => Photo(
+            children: List.of(galleryStore.photoStates
+                .where((ps) => ps.value.display)
+                .map((ps) => Photo(
                     state: ps.value,
-                    selectable: c.isTagging.value,
-                    onLongPress: c.toggleTagging,
-                    onSelect: c.onPhotoSelect)))),
+                    selectable: galleryStore.isTagging,
+                    onLongPress: galleryStore.toggleTagging,
+                    onSelect: galleryStore.onPhotoSelect)))),
       ),
       drawer: Drawer(
         child: ListView(
-          children: List.of(c.tags.map((t) => ListTile(
+          children: List.of(tags.map((t) => ListTile(
                 title: Text(t),
                 onTap: () {
-                  c.selectTag(t);
+                  galleryStore.selectTag(t);
                   Navigator.of(context).pop();
                 },
               ))),
