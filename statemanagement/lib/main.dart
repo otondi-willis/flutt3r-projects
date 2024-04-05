@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+//import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 
 void main() {
-  runApp(
-    ChangeNotifierProvider(
-      create: (context) => GalleryModel(),
-      child: const App(),
-    ),
-  );
+  runApp(const App());
 }
 
 const List<String> urls = [
@@ -39,50 +35,54 @@ class App extends StatelessWidget {
   }
 }
 
-class GalleryModel extends ChangeNotifier {
-  bool isTagging = false;
-  List<PhotoState> photoStates =
-      List.of(urls.map((url) => PhotoState(url: url, tags: {})));
+class GalleryController extends GetxController {
+  var isTagging = false.obs;
+  var photoStates =
+      List.of(urls.map((url) => PhotoState(url: url, tags: {}).obs)).obs;
   Set<String> tags = {"all", "nature", "cat"};
 
   void toggleTagging(String? url) {
-    isTagging = !isTagging;
+    isTagging.value = !isTagging.value;
     for (var ps in photoStates) {
-      if (isTagging && ps.url == url) {
-        ps.selected = true;
-      } else {
-        ps.selected = false;
-      }
+      ps.update((ps) {
+        if (isTagging.value && ps?.url == url) {
+          ps?.selected = true;
+        } else {
+          ps?.selected = false;
+        }
+      });
     }
-    notifyListeners();
   }
 
   void onPhotoSelect(String url, bool selected) {
     for (var ps in photoStates) {
-      if (ps.url == url) {
-        ps.selected = selected;
-      }
+      ps.update((ps) {
+        if (ps?.url == url) {
+          ps?.selected = selected;
+        }
+      });
     }
-    notifyListeners();
   }
 
   void selectTag(String tag) {
-    if (isTagging) {
+    if (isTagging.value) {
       if (tag != "all") {
         for (var ps in photoStates) {
-          if (ps.selected == true) {
-            ps.tags.add(tag);
+          if (ps.value.selected == true) {
+            ps.update((ps) {
+              ps?.tags.add(tag);
+            });
           }
         }
       }
       toggleTagging(null);
     } else {
       for (var ps in photoStates) {
-        ps.display = tag == "all" ? true : ps.tags.contains(tag);
+        ps.update((ps) {
+          ps?.display = tag == "all" ? true : ps.tags.contains(tag);
+        });
       }
     }
-
-    notifyListeners();
   }
 }
 
@@ -95,32 +95,33 @@ class GalleryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<GalleryModel>(builder: (context, gallery, child) {
-      return Scaffold(
-        appBar: AppBar(title: Text(title)),
-        body: GridView.count(
-          primary: false,
-          crossAxisCount: 2,
-          children: List.of(gallery.photoStates.where((ps) => ps.display).map(
-              (ps) => Photo(
-                  state: ps,
-                  selectable: gallery.isTagging,
-                  onLongPress: gallery.toggleTagging,
-                  onSelect: gallery.onPhotoSelect))),
+    final GalleryController c = Get.put(GalleryController());
+
+    return Scaffold(
+      appBar: AppBar(title: Text(title)),
+      body: Obx(
+        () => GridView.count(
+            primary: false,
+            crossAxisCount: 2,
+            children: List.of(c.photoStates.where((ps) => ps.value.display).map(
+                (ps) => Photo(
+                    state: ps.value,
+                    selectable: c.isTagging.value,
+                    onLongPress: c.toggleTagging,
+                    onSelect: c.onPhotoSelect)))),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          children: List.of(c.tags.map((t) => ListTile(
+                title: Text(t),
+                onTap: () {
+                  c.selectTag(t);
+                  Navigator.of(context).pop();
+                },
+              ))),
         ),
-        drawer: Drawer(
-          child: ListView(
-            children: List.of(gallery.tags.map((t) => ListTile(
-                  title: Text(t),
-                  onTap: () {
-                    gallery.selectTag(t);
-                    Navigator.of(context).pop();
-                  },
-                ))),
-          ),
-        ),
-      );
-    });
+      ),
+    );
   }
 }
 
