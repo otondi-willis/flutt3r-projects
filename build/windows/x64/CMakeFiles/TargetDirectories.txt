@@ -1,0 +1,10 @@
+D:/fluttp/layouts/build/windows/x64/CMakeFiles/INSTALL.dir
+D:/fluttp/layouts/build/windows/x64/CMakeFiles/ALL_BUILD.dir
+D:/fluttp/layouts/build/windows/x64/CMakeFiles/ZERO_CHECK.dir
+D:/fluttp/layouts/build/windows/x64/flutter/CMakeFiles/flutter_wrapper_plugin.dir
+D:/fluttp/layouts/build/windows/x64/flutter/CMakeFiles/flutter_wrapper_app.dir
+D:/fluttp/layouts/build/windows/x64/flutter/CMakeFiles/flutter_assemble.dir
+D:/fluttp/layouts/build/windows/x64/flutter/CMakeFiles/INSTALL.dir
+D:/fluttp/layouts/build/windows/x64/runner/CMakeFiles/layouts.dir
+D:/fluttp/layouts/build/windows/x64/runner/CMakeFiles/INSTALL.dir
+D:/fluttp/layouts/build/windows/x64/runner/CMakeFiles/ALL_BUILD.dir
