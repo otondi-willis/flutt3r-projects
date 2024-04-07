@@ -1,3 +1,5 @@
+//import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -9,17 +11,23 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: AppointmentScreen(),
+      home: MyTabbedScreen(),
     );
   }
 }
 
-class AppointmentScreen extends StatefulWidget {
+class MyTabbedScreen extends StatefulWidget {
   @override
-  _AppointmentScreenState createState() => _AppointmentScreenState();
+  _MyTabbedScreenState createState() => _MyTabbedScreenState();
 }
 
-class _AppointmentScreenState extends State<AppointmentScreen> {
+class _MyTabbedScreenState extends State<MyTabbedScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  Color background = const Color(0xFFFCF4F4);
+  Color maroon = const Color(0xFFc00100);
+  Color dark_maroon = const Color(0xFF850808);
+
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedStartTime = TimeOfDay.now().replacing(minute: 0);
   TimeOfDay selectedEndTime =
@@ -69,7 +77,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Select Start Time'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
@@ -120,100 +127,408 @@ class _AppointmentScreenState extends State<AppointmentScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 4, vsync: this);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Select Appointment'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              'Equity Afia - Ruiru',
-              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
-            ),
-            Row(
-              children: [
-                GestureDetector(
-                  onTap: () => _selectDate(context),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.calendar_today,
-                        size: 10,
-                      ),
-                      SizedBox(width: 5),
-                      Text('${formatDate(selectedDate)}',
-                          style: TextStyle(
-                            fontSize: 10,
-                          )),
-                    ],
-                  ),
-                ),
-                SizedBox(width: 20),
-                GestureDetector(
-                  onTap: () => _selectStartTime(context),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.access_time,
-                        size: 10,
-                      ),
-                      SizedBox(width: 3),
-                      Text(
-                          '${formatTime(selectedStartTime)} - ${formatTime(selectedEndTime)}',
-                          style: TextStyle(
-                            fontSize: 10,
-                          )),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 5),
-            Row(
-              children: [
-                GestureDetector(
-                  onTap: () => _selectDate(context),
-                  child: Row(
-                    children: [
-                      Text('${formatDate(selectedDate)}',
-                          style: TextStyle(
-                            fontSize: 10,
-                          )),
-                      Icon(
-                        Icons.info_outline,
-                        size: 13,
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(width: 20),
-              ],
-            ),
-            Row(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                    color: Color(0xFFc00100),
-                  ),
-                  child: TextButton(
-                    onPressed: () {},
-                    child: Text(
-                      'View Details',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: [
+            Tab(text: 'Upcoming'),
+            Tab(text: 'Pending'),
+            Tab(text: 'Past'),
+            Tab(text: 'Cancelled'),
           ],
         ),
       ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      'Appointment with Dr. Zachary Maina',
+                      style:
+                          TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () => _selectDate(context),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.calendar_today,
+                                size: 10,
+                              ),
+                              SizedBox(width: 5),
+                              Text('${formatDate(selectedDate)}',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                  )),
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 20),
+                        GestureDetector(
+                          onTap: () => _selectStartTime(context),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.access_time,
+                                size: 10,
+                              ),
+                              SizedBox(width: 3),
+                              Text(
+                                  '${formatTime(selectedStartTime)} - ${formatTime(selectedEndTime)}',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                  )),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 5),
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () => _selectDate(context),
+                          child: Row(
+                            children: [
+                              Text('Details ',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                  )),
+                              Icon(
+                                Icons.info_outline,
+                                size: 13,
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 20),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                            color: Color(0xFFc00100),
+                          ),
+                          child: TextButton(
+                            onPressed: () {},
+                            child: Text(
+                              'Send a message',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      'Appointment with Dr. Mark Oloo',
+                      style:
+                          TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () => _selectDate(context),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.calendar_today,
+                                size: 10,
+                              ),
+                              SizedBox(width: 5),
+                              Text('${formatDate(selectedDate)}',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                  )),
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 20),
+                        GestureDetector(
+                          onTap: () => _selectStartTime(context),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.access_time,
+                                size: 10,
+                              ),
+                              SizedBox(width: 3),
+                              Text(
+                                  '${formatTime(selectedStartTime)} - ${formatTime(selectedEndTime)}',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                  )),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 5),
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () => _selectDate(context),
+                          child: Row(
+                            children: [
+                              Text('Details ',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                  )),
+                              Icon(
+                                Icons.info_outline,
+                                size: 13,
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 20),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                            color: Color(0xFFc00100),
+                          ),
+                          child: TextButton(
+                            onPressed: () {},
+                            child: Text(
+                              'Send a message',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      'Appointment with Dr. Zachary Maina',
+                      style:
+                          TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.calendar_today,
+                          size: 10,
+                        ),
+                        SizedBox(width: 5),
+                        Text('${formatDate(selectedDate)}',
+                            style: TextStyle(
+                              fontSize: 10,
+                            )),
+                        SizedBox(width: 20),
+                        Icon(
+                          Icons.access_time,
+                          size: 10,
+                        ),
+                        SizedBox(width: 3),
+                        Text(
+                            '${formatTime(selectedStartTime)} - ${formatTime(selectedEndTime)}',
+                            style: TextStyle(
+                              fontSize: 10,
+                            )),
+                      ],
+                    ),
+                    SizedBox(height: 5),
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () => _selectDate(context),
+                          child: Row(
+                            children: [
+                              Text('Details ',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                  )),
+                              Icon(
+                                Icons.info_outline,
+                                size: 13,
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 20),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                            color: Color(0xFFc00100),
+                          ),
+                          child: TextButton(
+                            onPressed: () {},
+                            child: Text(
+                              'View Details',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      'Appointment with Dr. Zachary Maina',
+                      style:
+                          TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.calendar_today,
+                          size: 10,
+                        ),
+                        SizedBox(width: 5),
+                        Text('${formatDate(selectedDate)}',
+                            style: TextStyle(
+                              fontSize: 10,
+                            )),
+                        SizedBox(width: 20),
+                        Icon(
+                          Icons.access_time,
+                          size: 10,
+                        ),
+                        SizedBox(width: 3),
+                        Text(
+                            '${formatTime(selectedStartTime)} - ${formatTime(selectedEndTime)}',
+                            style: TextStyle(
+                              fontSize: 10,
+                            )),
+                      ],
+                    ),
+                    SizedBox(height: 5),
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () => _selectDate(context),
+                          child: Row(
+                            children: [
+                              Text('Details ',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                  )),
+                              Icon(
+                                Icons.info_outline,
+                                size: 13,
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 20),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                            color: Color(0xFFc00100),
+                          ),
+                          child: TextButton(
+                            onPressed: () {},
+                            child: Text(
+                              'View Details',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 }
